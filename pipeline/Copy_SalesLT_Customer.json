@@ -13,8 +13,29 @@
 					"secureInput": false
 				},
 				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderQuery": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix,\nCompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt,\nCAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer"
+					},
+					"sink": {
+						"type": "SqlSink",
+						"writeBatchSize": 10000,
+						"preCopyScript": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]\n"
+					},
 					"enableStaging": false
-				}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_MSQL_SalesLT_Customer",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_ASQL_SalesLT_Customer",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		]
 	}
