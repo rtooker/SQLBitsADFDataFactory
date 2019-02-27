@@ -1,0 +1,13 @@
+{
+	"name": "DS_MSQL_SalesLT_Customer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MSQL_AdventureWorksLT",
+			"type": "LinkedServiceReference"
+		},
+		"type": "SqlServerTable",
+		"typeProperties": {
+			"tableName": "[SalesLT].[Customer]"
+		}
+	}
+}
