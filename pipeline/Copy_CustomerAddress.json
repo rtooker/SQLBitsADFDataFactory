@@ -39,7 +39,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"TableName": {
-								"value": "@pipeline().parameters.SinkPreCopyScript",
+								"value": "@pipeline().parameters.SinkTableName",
 								"type": "Expression"
 							}
 						}
