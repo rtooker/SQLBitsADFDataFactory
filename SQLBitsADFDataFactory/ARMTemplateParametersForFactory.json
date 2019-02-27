@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "SQLBitsADFDataFactory"
+		},
+		"LS_ASQL_Staging_connectionString": {
+			"value": ""
+		},
+		"LS_MSQL_AdventureWorksLT_connectionString": {
+			"value": ""
+		},
+		"LS_ADLS_sqlbitsdlsv1_properties_typeProperties_dataLakeStoreUri": {
+			"value": "https://sqlbitsdlsv1.azuredatalakestore.net/webhdfs/v1"
+		},
+		"LS_ADLS_sqlbitsdlsv1_properties_typeProperties_tenant": {
+			"value": "56f45b33-b6ef-44ac-828a-d47edc7c733f"
+		},
+		"LS_ADLS_sqlbitsdlsv1_properties_typeProperties_subscriptionId": {
+			"value": "c1f1036e-0dba-4a3a-845c-deaccf21f354"
+		},
+		"LS_ADLS_sqlbitsdlsv1_properties_typeProperties_resourceGroupName": {
+			"value": "SQLBitsADF"
+		}
+	}
+}
