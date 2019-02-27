@@ -1,0 +1,6 @@
+{
+	"name": "SQLBitsSelfHostedIntegrationRuntime",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
