@@ -4,8 +4,8 @@
 	"properties": {
 		"type": "SqlServer",
 		"typeProperties": {
-			"connectionString": "integrated security=False;data source=51.140.114.10;initial catalog=AdventureWorksLT;user id=DataLoadUser",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjNWU5Y2ZlMi04YzYyLTQ1NDQtOWFiNC02MjJiMjQzNWY0NmQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"connectionString": "integrated security=False;data source=51.140.114.10;initial catalog=AdventureWorksLT;user id=DataLoadUser;trustservercertificate=True",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIzM2QyYzhiYy1iNmZkLTQzOGItOWM3ZC04MDc4ZjYzMzc2NTMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "SQLBitsSelfHostedIntegrationRuntime",
