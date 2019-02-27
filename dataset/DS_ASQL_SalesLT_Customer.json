@@ -6,6 +6,104 @@
 			"type": "LinkedServiceReference"
 		},
 		"type": "AzureSqlTable",
+		"structure": [
+			{
+				"name": "CustomerID",
+				"type": "Int32"
+			},
+			{
+				"name": "NameStyle",
+				"type": "Boolean"
+			},
+			{
+				"name": "Title",
+				"type": "String"
+			},
+			{
+				"name": "FirstName",
+				"type": "String"
+			},
+			{
+				"name": "MiddleName",
+				"type": "String"
+			},
+			{
+				"name": "LastName",
+				"type": "String"
+			},
+			{
+				"name": "Suffix",
+				"type": "String"
+			},
+			{
+				"name": "CompanyName",
+				"type": "String"
+			},
+			{
+				"name": "SalesPerson",
+				"type": "String"
+			},
+			{
+				"name": "EmailAddress",
+				"type": "String"
+			},
+			{
+				"name": "Phone",
+				"type": "String"
+			},
+			{
+				"name": "PasswordHash",
+				"type": "String"
+			},
+			{
+				"name": "PasswordSalt",
+				"type": "String"
+			},
+			{
+				"name": "rowguid",
+				"type": "String"
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "DateTime"
+			},
+			{
+				"name": "ChangeHashKey",
+				"type": "String"
+			},
+			{
+				"name": "CreateBatchId",
+				"type": "Int32"
+			},
+			{
+				"name": "CreateDateTime",
+				"type": "DateTime"
+			},
+			{
+				"name": "UpdateBatchId",
+				"type": "Int32"
+			},
+			{
+				"name": "UpdateDateTime",
+				"type": "DateTime"
+			},
+			{
+				"name": "SYS_CHANGE_VERSION",
+				"type": "Int64"
+			},
+			{
+				"name": "SYS_CHANGE_CREATION_VERSION",
+				"type": "Int64"
+			},
+			{
+				"name": "SYS_CHANGE_OPERATION",
+				"type": "String"
+			},
+			{
+				"name": "SYS_CHANGE_CONTEXT",
+				"type": "Byte[]"
+			}
+		],
 		"typeProperties": {
 			"tableName": "[AWLTSRC].[SalesLT_Customer]"
 		}
