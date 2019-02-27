@@ -1,0 +1,24 @@
+{
+	"name": "DS_ADLS_CustomerAddress",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_sqlbitsdlsv1",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureDataLakeStoreFile",
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": ",",
+				"rowDelimiter": "",
+				"quoteChar": "\"",
+				"nullValue": "\\N",
+				"treatEmptyAsNull": true,
+				"skipLineCount": 0,
+				"firstRowAsHeader": true
+			},
+			"fileName": "CustomerAddress.txt",
+			"folderPath": "Reference"
+		}
+	}
+}
