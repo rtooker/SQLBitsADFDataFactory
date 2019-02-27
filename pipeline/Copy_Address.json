@@ -17,6 +17,14 @@
 						"type": "AzureDataLakeStoreSource",
 						"recursive": true
 					},
+					"sink": {
+						"type": "SqlSink",
+						"writeBatchSize": 10000,
+						"preCopyScript": {
+							"value": "@{pipeline().parameters.SinkPreCopyScript}",
+							"type": "Expression"
+						}
+					},
 					"enableStaging": false
 				},
 				"inputs": [
@@ -24,9 +32,31 @@
 						"referenceName": "DS_ADLS_Address",
 						"type": "DatasetReference"
 					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_ASQL_Staging",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": {
+								"value": "@pipeline().parameters.SinkTableName",
+								"type": "Expression"
+							}
+						}
+					}
 				]
 			}
 		],
+		"parameters": {
+			"SinkTableName": {
+				"type": "String",
+				"defaultValue": "AWLTSRC.SalesLT_Address"
+			},
+			"SinkPreCopyScript": {
+				"type": "String",
+				"defaultValue": "TRUNCATE TABLE AWLTSRC.SalesLT_Address"
+			}
+		},
 		"folder": {
 			"name": "Lab 02"
 		}
