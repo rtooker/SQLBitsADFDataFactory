@@ -1,0 +1,21 @@
+{
+	"name": "DS_ADLS_Address",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_sqlbitsdlsv1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Lab 02"
+		},
+		"type": "AzureDataLakeStoreFile",
+		"typeProperties": {
+			"format": {
+				"type": "JsonFormat",
+				"filePattern": "setOfObjects"
+			},
+			"fileName": "Address.json",
+			"folderPath": "Reference"
+		}
+	}
+}
