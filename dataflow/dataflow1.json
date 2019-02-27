@@ -1,6 +1,18 @@
 {
 	"name": "dataflow1",
 	"properties": {
-		"type": "MappingDataFlow"
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_ASQL_SalesLT_Customer",
+						"type": "DatasetReference"
+					},
+					"name": "source1",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table') ~> source1"
+				}
+			]
+		}
 	}
 }
