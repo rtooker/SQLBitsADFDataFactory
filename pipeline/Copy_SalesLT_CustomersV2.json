@@ -15,7 +15,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlSource",
-						"sqlReaderQuery": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix,\nCompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt,\nCAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer"
+						"sqlReaderQuery": {
+							"value": "@pipeline().parameters.SourceQuery",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "SqlSink",
