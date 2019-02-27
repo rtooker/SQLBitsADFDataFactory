@@ -19,7 +19,11 @@
 					},
 					"sink": {
 						"type": "SqlSink",
-						"writeBatchSize": 10000
+						"writeBatchSize": 10000,
+						"preCopyScript": {
+							"value": "@{pipeline().parameters.SinkPreCopyScript}",
+							"type": "Expression"
+						}
 					},
 					"enableStaging": false
 				},
@@ -34,11 +38,24 @@
 						"referenceName": "DS_ASQL_Staging",
 						"type": "DatasetReference",
 						"parameters": {
-							"TableName": "AWLTSRC.SalesLT_CustomerAddress"
+							"TableName": {
+								"value": "@pipeline().parameters.SinkPreCopyScript",
+								"type": "Expression"
+							}
 						}
 					}
 				]
 			}
-		]
+		],
+		"parameters": {
+			"SinkPreCopyScript": {
+				"type": "String",
+				"defaultValue": "TRUNCATE TABLE AWLTSRC.SalesLT_CustomerAddress"
+			},
+			"SinkTableName": {
+				"type": "String",
+				"defaultValue": "AWLTSRC.SalesLT_CustomerAddress"
+			}
+		}
 	}
 }
