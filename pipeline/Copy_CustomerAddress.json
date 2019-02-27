@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy Data1",
+				"name": "Customer Address",
 				"type": "Copy",
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -17,12 +17,25 @@
 						"type": "AzureDataLakeStoreSource",
 						"recursive": true
 					},
+					"sink": {
+						"type": "SqlSink",
+						"writeBatchSize": 10000
+					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
 						"referenceName": "DS_ADLS_CustomerAddress",
 						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_ASQL_Staging",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "AWLTSRC.SalesLT_CustomerAddress"
+						}
 					}
 				]
 			}
