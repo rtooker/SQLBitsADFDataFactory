@@ -1,0 +1,13 @@
+{
+	"name": "DS_ASQL_SalesLT_Customer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ASQL_Staging",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureSqlTable",
+		"typeProperties": {
+			"tableName": "[AWLTSRC].[SalesLT_Customer]"
+		}
+	}
+}
