@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable1",
+	"name": "AzureSqlTableforDataFlow",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_ASQL_Staging",
