@@ -1,0 +1,6 @@
+{
+	"name": "DS_ASQL_Staging",
+	"properties": {
+		"type": "AzureSqlTable"
+	}
+}
