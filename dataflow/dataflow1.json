@@ -10,7 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "source1",
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table') ~> source1"
+					"script": "source(allowSchemaDrift: false,\n\tvalidateSchema: true,\n\tformat: 'table') ~> source1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Aggregate1",
+					"script": "source1 aggregate() ~> Aggregate1"
 				}
 			]
 		}
