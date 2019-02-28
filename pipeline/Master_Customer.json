@@ -93,15 +93,24 @@
 							"type": "Int32"
 						},
 						"PipelineId": {
-							"value": "@pipeline().RunId",
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
 							"type": "String"
 						},
 						"PipelineName": {
-							"value": "@pipeline().Pipeline",
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
 							"type": "String"
 						},
 						"PipelineTriggerType": {
-							"value": "@pipeline().TriggerType",
+							"value": {
+								"value": "@pipeline().TriggerType",
+								"type": "Expression"
+							},
 							"type": "String"
 						},
 						"SinkName": {
