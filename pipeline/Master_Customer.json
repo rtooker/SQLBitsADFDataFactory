@@ -1,0 +1,140 @@
+{
+	"name": "Master_Customer",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_SalesLT_CustomerV2",
+				"type": "ExecutePipeline",
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy_SalesLT_CustomersV2",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"SourceQuery": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, CAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer",
+						"SinkPreCopyScript": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]"
+					}
+				}
+			},
+			{
+				"name": "Copy_Address",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Copy_SalesLT_CustomerV2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy_Address",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"SinkTableName": "AWLTSRC.SalesLT_Address",
+						"SinkPreCopyScript": "TRUNCATE TABLE AWLTSRC.SalesLT_Address"
+					}
+				}
+			},
+			{
+				"name": "Copy_CustomerAddress",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Copy_Address",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy_CustomerAddress",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "usp_Customer_Load",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy_CustomerAddress",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"storedProcedureName": "[Stage].[usp_Customer_Load]",
+					"storedProcedureParameters": {
+						"BatchId": {
+							"value": "-1",
+							"type": "Int64"
+						},
+						"ETLAuditLogId": {
+							"value": "-1",
+							"type": "Int64"
+						},
+						"ETLControlId": {
+							"value": "-1",
+							"type": "Int32"
+						},
+						"PipelineId": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineTriggerType": {
+							"value": {
+								"value": "@pipeline().TriggerType",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"SinkName": {
+							"value": "Stage.Customer",
+							"type": "String"
+						},
+						"SourceName": {
+							"value": "AWLTSRC.Customer",
+							"type": "String"
+						},
+						"SourceSystem": {
+							"value": "AWLTSRC",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_ASQL_Staging",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Lab 02"
+		}
+	}
+}
