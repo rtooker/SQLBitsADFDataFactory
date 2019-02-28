@@ -24,7 +24,7 @@
 						"type": "SqlSink",
 						"writeBatchSize": 10000,
 						"sqlWriterStoredProcedureName": "[AWLTSRC].[usp_SalesLT_Customer_Merge]",
-						"sqlWriterTableType": "SalesLT_CustomerType",
+						"sqlWriterTableType": "AWLTSRC.SalesLT_CustomerType",
 						"storedProcedureParameters": {
 							"BatchId": {
 								"type": "Int64",
