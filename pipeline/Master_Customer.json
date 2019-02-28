@@ -17,8 +17,16 @@
 				}
 			},
 			{
-				"name": "Copy_Address ",
+				"name": "Copy_Address",
 				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Copy_SalesLT_CustomerV2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "Copy_Address",
@@ -33,6 +41,14 @@
 			{
 				"name": "Copy_CustomerAddress",
 				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Copy_Address",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "Copy_CustomerAddress",
@@ -43,6 +59,14 @@
 			{
 				"name": "usp_Customer_Load",
 				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy_CustomerAddress",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
