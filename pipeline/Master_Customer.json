@@ -29,6 +29,16 @@
 						"SinkPreCopyScript": "TRUNCATE TABLE AWLTSRC.SalesLT_Address"
 					}
 				}
+			},
+			{
+				"name": "Copy_CustomerAddress",
+				"type": "ExecutePipeline",
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy_CustomerAddress",
+						"type": "PipelineReference"
+					}
+				}
 			}
 		],
 		"folder": {
