@@ -5,11 +5,26 @@
 		"factoryName": {
 			"value": "SQLBitsADFDataFactory"
 		},
+		"LS_ADF_StorageForDataFlows_connectionString": {
+			"value": ""
+		},
 		"LS_ASQL_Staging_connectionString": {
 			"value": ""
 		},
 		"LS_MSQL_AdventureWorksLT_connectionString": {
 			"value": ""
+		},
+		"DS_ADLS_Address_properties_typeProperties_fileName": {
+			"value": "Address.json"
+		},
+		"DS_ADLS_Address_properties_typeProperties_folderPath": {
+			"value": "Reference"
+		},
+		"DS_ADLS_CustomerAddress_properties_typeProperties_fileName": {
+			"value": "CustomerAddress.txt"
+		},
+		"DS_ADLS_CustomerAddress_properties_typeProperties_folderPath": {
+			"value": "Reference"
 		},
 		"LS_ADLS_sqlbitsdlsv1_properties_typeProperties_dataLakeStoreUri": {
 			"value": "https://sqlbitsdlsv1.azuredatalakestore.net/webhdfs/v1"

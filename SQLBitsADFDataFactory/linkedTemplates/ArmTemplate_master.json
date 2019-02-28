@@ -7,6 +7,10 @@
 			"metadata": "Data Factory Name",
 			"defaultValue": "SQLBitsADFDataFactory"
 		},
+		"LS_ADF_StorageForDataFlows_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_ADF_StorageForDataFlows'"
+		},
 		"LS_ASQL_Staging_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_ASQL_Staging'"
@@ -14,6 +18,22 @@
 		"LS_MSQL_AdventureWorksLT_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_MSQL_AdventureWorksLT'"
+		},
+		"DS_ADLS_Address_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "Address.json"
+		},
+		"DS_ADLS_Address_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "Reference"
+		},
+		"DS_ADLS_CustomerAddress_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "CustomerAddress.txt"
+		},
+		"DS_ADLS_CustomerAddress_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "Reference"
 		},
 		"LS_ADLS_sqlbitsdlsv1_properties_typeProperties_dataLakeStoreUri": {
 			"type": "string",
@@ -58,6 +78,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"LS_ADF_StorageForDataFlows_connectionString": {
+						"value": "[parameters('LS_ADF_StorageForDataFlows_connectionString')]"
+					},
 					"LS_ASQL_Staging_connectionString": {
 						"value": "[parameters('LS_ASQL_Staging_connectionString')]"
 					},
@@ -75,6 +98,18 @@
 					},
 					"LS_ADLS_sqlbitsdlsv1_properties_typeProperties_resourceGroupName": {
 						"value": "[parameters('LS_ADLS_sqlbitsdlsv1_properties_typeProperties_resourceGroupName')]"
+					},
+					"DS_ADLS_Address_properties_typeProperties_fileName": {
+						"value": "[parameters('DS_ADLS_Address_properties_typeProperties_fileName')]"
+					},
+					"DS_ADLS_Address_properties_typeProperties_folderPath": {
+						"value": "[parameters('DS_ADLS_Address_properties_typeProperties_folderPath')]"
+					},
+					"DS_ADLS_CustomerAddress_properties_typeProperties_fileName": {
+						"value": "[parameters('DS_ADLS_CustomerAddress_properties_typeProperties_fileName')]"
+					},
+					"DS_ADLS_CustomerAddress_properties_typeProperties_folderPath": {
+						"value": "[parameters('DS_ADLS_CustomerAddress_properties_typeProperties_folderPath')]"
 					}
 				}
 			},

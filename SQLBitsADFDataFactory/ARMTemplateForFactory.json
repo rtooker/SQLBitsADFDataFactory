@@ -7,6 +7,10 @@
 			"metadata": "Data Factory Name",
 			"defaultValue": "SQLBitsADFDataFactory"
 		},
+		"LS_ADF_StorageForDataFlows_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_ADF_StorageForDataFlows'"
+		},
 		"LS_ASQL_Staging_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_ASQL_Staging'"
@@ -14,6 +18,22 @@
 		"LS_MSQL_AdventureWorksLT_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_MSQL_AdventureWorksLT'"
+		},
+		"DS_ADLS_Address_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "Address.json"
+		},
+		"DS_ADLS_Address_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "Reference"
+		},
+		"DS_ADLS_CustomerAddress_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "CustomerAddress.txt"
+		},
+		"DS_ADLS_CustomerAddress_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "Reference"
 		},
 		"LS_ADLS_sqlbitsdlsv1_properties_typeProperties_dataLakeStoreUri": {
 			"type": "string",
@@ -37,6 +57,672 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Copy_Address')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Address",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureDataLakeStoreSource",
+								"recursive": true
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": 10000,
+								"preCopyScript": {
+									"value": "@{pipeline().parameters.SinkPreCopyScript}",
+									"type": "Expression"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_ADLS_Address",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ASQL_Staging",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": {
+										"value": "@pipeline().parameters.SinkTableName",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"parameters": {
+					"SinkTableName": {
+						"type": "String",
+						"defaultValue": "AWLTSRC.SalesLT_Address"
+					},
+					"SinkPreCopyScript": {
+						"type": "String",
+						"defaultValue": "TRUNCATE TABLE AWLTSRC.SalesLT_Address"
+					}
+				},
+				"folder": {
+					"name": "Lab 02"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_ADLS_Address')]",
+				"[concat(variables('factoryId'), '/datasets/DS_ASQL_Staging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Copy_CustomerAddress')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Customer Address",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureDataLakeStoreSource",
+								"recursive": true
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": 10000,
+								"preCopyScript": {
+									"value": "@{pipeline().parameters.SinkPreCopyScript}",
+									"type": "Expression"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_ADLS_CustomerAddress",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ASQL_Staging",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": {
+										"value": "@pipeline().parameters.SinkTableName",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"parameters": {
+					"SinkPreCopyScript": {
+						"type": "String",
+						"defaultValue": "TRUNCATE TABLE AWLTSRC.SalesLT_CustomerAddress"
+					},
+					"SinkTableName": {
+						"type": "String",
+						"defaultValue": "AWLTSRC.SalesLT_CustomerAddress"
+					}
+				},
+				"folder": {
+					"name": "Lab 02"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_ADLS_CustomerAddress')]",
+				"[concat(variables('factoryId'), '/datasets/DS_ASQL_Staging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Copy_SalesLT_Customer')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyFromMSQLtoASQL",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlSource",
+								"sqlReaderQuery": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix,\nCompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt,\nCAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": 10000,
+								"preCopyScript": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]\n"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_MSQL_SalesLT_Customer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ASQL_SalesLT_Customer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"folder": {
+					"name": "Lab01"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_MSQL_SalesLT_Customer')]",
+				"[concat(variables('factoryId'), '/datasets/DS_ASQL_SalesLT_Customer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Copy_SalesLT_CustomersV2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyFromMSQLtoASQL",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlSource",
+								"sqlReaderQuery": {
+									"value": "@pipeline().parameters.SourceQuery",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": 10000,
+								"preCopyScript": {
+									"value": "@{pipeline().parameters.SinkPreCopyScript}",
+									"type": "Expression"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_MSQL_SalesLT_Customer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ASQL_SalesLT_Customer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"parameters": {
+					"SourceQuery": {
+						"type": "String",
+						"defaultValue": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, CAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer"
+					},
+					"SinkPreCopyScript": {
+						"type": "String",
+						"defaultValue": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]"
+					}
+				},
+				"folder": {
+					"name": "Lab 02"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_MSQL_SalesLT_Customer')]",
+				"[concat(variables('factoryId'), '/datasets/DS_ASQL_SalesLT_Customer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Master_Customer')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_SalesLT_CustomerV2",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Copy_SalesLT_CustomersV2",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"SourceQuery": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, CAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer",
+								"SinkPreCopyScript": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]"
+							}
+						}
+					},
+					{
+						"name": "Copy_Address",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Copy_SalesLT_CustomerV2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Copy_Address",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"SinkTableName": "AWLTSRC.SalesLT_Address",
+								"SinkPreCopyScript": "TRUNCATE TABLE AWLTSRC.SalesLT_Address"
+							}
+						}
+					},
+					{
+						"name": "Copy_CustomerAddress",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Copy_Address",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Copy_CustomerAddress",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true
+						}
+					},
+					{
+						"name": "usp_Customer_Load",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Copy_CustomerAddress",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[concat('[', 'Stage].[usp_Customer_Load]')]",
+							"storedProcedureParameters": {
+								"BatchId": {
+									"value": "-1",
+									"type": "Int64"
+								},
+								"ETLAuditLogId": {
+									"value": "-1",
+									"type": "Int64"
+								},
+								"ETLControlId": {
+									"value": "-1",
+									"type": "Int32"
+								},
+								"PipelineId": {
+									"value": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"PipelineName": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"PipelineTriggerType": {
+									"value": {
+										"value": "@pipeline().TriggerType",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"SinkName": {
+									"value": "Stage.Customer",
+									"type": "String"
+								},
+								"SourceName": {
+									"value": "AWLTSRC.Customer",
+									"type": "String"
+								},
+								"SourceSystem": {
+									"value": "AWLTSRC",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_ASQL_Staging",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"folder": {
+					"name": "Lab 02"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Copy_SalesLT_CustomersV2')]",
+				"[concat(variables('factoryId'), '/pipelines/Copy_Address')]",
+				"[concat(variables('factoryId'), '/pipelines/Copy_CustomerAddress')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_ASQL_Staging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableforDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ASQL_Staging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "NameStyle",
+						"type": "bit"
+					},
+					{
+						"name": "Title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FirstName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MiddleName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Suffix",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CompanyName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SalesPerson",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmailAddress",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Phone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PasswordHash",
+						"type": "varchar"
+					},
+					{
+						"name": "PasswordSalt",
+						"type": "varchar"
+					},
+					{
+						"name": "rowguid",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ModifiedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "ChangeHashKey",
+						"type": "nchar"
+					},
+					{
+						"name": "CreateBatchId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CreateDateTime",
+						"type": "datetime2",
+						"scale": 3
+					},
+					{
+						"name": "UpdateBatchId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UpdateDateTime",
+						"type": "datetime2",
+						"scale": 3
+					},
+					{
+						"name": "SYS_CHANGE_VERSION",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "SYS_CHANGE_CREATION_VERSION",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "SYS_CHANGE_OPERATION",
+						"type": "nchar"
+					},
+					{
+						"name": "SYS_CHANGE_CONTEXT",
+						"type": "varbinary"
+					}
+				],
+				"typeProperties": {
+					"tableName": "[concat('[', 'AWLTSRC].[SalesLT_Customer]')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ASQL_Staging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ADLS_Address')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_sqlbitsdlsv1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Lab 02"
+				},
+				"annotations": [],
+				"type": "AzureDataLakeStoreFile",
+				"typeProperties": {
+					"format": {
+						"type": "JsonFormat",
+						"filePattern": "setOfObjects"
+					},
+					"fileName": "[parameters('DS_ADLS_Address_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('DS_ADLS_Address_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_sqlbitsdlsv1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ADLS_CustomerAddress')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_sqlbitsdlsv1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Lab 02"
+				},
+				"annotations": [],
+				"type": "AzureDataLakeStoreFile",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"quoteChar": "\"",
+						"nullValue": "\\N",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": true
+					},
+					"fileName": "[parameters('DS_ADLS_CustomerAddress_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('DS_ADLS_CustomerAddress_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_sqlbitsdlsv1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ASQL_SalesLT_Customer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ASQL_Staging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"typeProperties": {
+					"tableName": "[concat('[', 'AWLTSRC].[SalesLT_Customer]')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ASQL_Staging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ASQL_Staging')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ASQL_Staging",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TableName": {
+						"type": "String",
+						"defaultValue": "dbo.TableName"
+					}
+				},
+				"folder": {
+					"name": "Generic Datasets"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"typeProperties": {
+					"tableName": {
+						"value": "@dataset().TableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ASQL_Staging')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_MSQL_SalesLT_Customer')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -54,6 +740,19 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_MSQL_AdventureWorksLT')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_ADF_StorageForDataFlows')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_ADF_StorageForDataFlows_connectionString')]"
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/LS_ADLS_sqlbitsdlsv1')]",
@@ -112,78 +811,6 @@
 				"typeProperties": {}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_ASQL_SalesLT_Customer')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_ASQL_Staging",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"typeProperties": {
-					"tableName": "[concat('[', 'AWLTSRC].[SalesLT_Customer]')]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_ASQL_Staging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Copy_SalesLT_Customer')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "CopyFromMSQLtoASQL",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlSource",
-								"sqlReaderQuery": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix,\nCompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt,\nCAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer"
-							},
-							"sink": {
-								"type": "SqlSink",
-								"writeBatchSize": 10000,
-								"preCopyScript": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]\n"
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_MSQL_SalesLT_Customer",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_ASQL_SalesLT_Customer",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_MSQL_SalesLT_Customer')]",
-				"[concat(variables('factoryId'), '/datasets/DS_ASQL_SalesLT_Customer')]"
-			]
 		}
 	]
 }
