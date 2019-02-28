@@ -1,0 +1,142 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "SQLBitsADFDataFactory"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Copy_SalesLT_CustomersV3')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyFromMSQLtoASQL",
+						"type": "Copy",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "SqlSource",
+								"sqlReaderQuery": {
+									"value": "@pipeline().parameters.SourceQuery",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": 10000,
+								"sqlWriterStoredProcedureName": "[concat('[', 'AWLTSRC].[usp_SalesLT_Customer_Merge]')]",
+								"sqlWriterTableType": "AWLTSRC.SalesLT_CustomerType",
+								"storedProcedureParameters": {
+									"BatchId": {
+										"type": "Int64",
+										"value": "-1"
+									},
+									"ETLAuditLogId": {
+										"type": "Int64",
+										"value": "-1"
+									},
+									"ETLControlId": {
+										"type": "Int32",
+										"value": "-1"
+									},
+									"LogType": {
+										"type": "String",
+										"value": "Information"
+									},
+									"PipelineId": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										}
+									},
+									"PipelineName": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										}
+									},
+									"PipelineTriggerType": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().TriggerType",
+											"type": "Expression"
+										}
+									},
+									"SinkName": {
+										"type": "String",
+										"value": "Stage.Customer"
+									},
+									"SourceName": {
+										"type": "String",
+										"value": "AWLTSRC.Customer"
+									},
+									"SourceSystem": {
+										"type": "String",
+										"value": "AWLTSRC"
+									}
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_MSQL_SalesLT_Customer",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ASQL_SalesLT_Customer",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"parameters": {
+					"SourceQuery": {
+						"type": "String",
+						"defaultValue": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, CAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer"
+					}
+				},
+				"folder": {
+					"name": "Lab 03"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_ASQL_SalesLT_Customer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ASQL_SalesLT_Customer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ASQL_Staging",
+					"type": "LinkedServiceReference"
+				},
+				"type": "AzureSqlTable",
+				"typeProperties": {
+					"tableName": "Source"
+				}
+			}
+		}
+	]
+}
