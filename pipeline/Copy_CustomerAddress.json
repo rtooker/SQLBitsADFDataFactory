@@ -56,6 +56,9 @@
 				"type": "String",
 				"defaultValue": "AWLTSRC.SalesLT_CustomerAddress"
 			}
+		},
+		"folder": {
+			"name": "Lab 02"
 		}
 	}
 }
