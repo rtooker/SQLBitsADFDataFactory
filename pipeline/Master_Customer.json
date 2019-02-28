@@ -1,0 +1,38 @@
+{
+	"name": "Master_Customer",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_SalesLT_CustomerV2",
+				"type": "ExecutePipeline",
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy_SalesLT_CustomersV2",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"SourceQuery": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, CAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer",
+						"SinkPreCopyScript": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]"
+					}
+				}
+			},
+			{
+				"name": "Copy_Address ",
+				"type": "ExecutePipeline",
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy_Address",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"SinkTableName": "AWLTSRC.SalesLT_Address",
+						"SinkPreCopyScript": "TRUNCATE TABLE AWLTSRC.SalesLT_Address"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Lab 02"
+		}
+	}
+}
